@@ -15,7 +15,7 @@
 			var hostsContent;
 
 			function alerta(t){
-				$("#alertmsg").html(f);
+				$("#alertmsg").html(t);
 				$( "#dialog-message" ).dialog({
 					modal: true,
 					buttons: {
@@ -26,27 +26,26 @@
 				});
 			}
 
-			function exitProgram(){
+			function saveHosts(){
 				txtAreaVal = $("#txtFile").val();
 				if (hostsContent !== txtAreaVal){
 					//hostsFile.close();
 
-					Titanium.API.debug("antes de abrir");
 					hostsFile = Titanium.Filesystem.getFileStream(hostsFile);
 
 					if (hostsFile.open(Titanium.Filesystem.MODE_WRITE)){
 						if (! hostsFile.write(txtAreaVal) ){
 							alert("Error saving hosts file");
-						}else{
-							Titanium.API.debug("se ha escrito");
 						}
 					}else{
-						Titanium.API.debug("no abre");
 						alert("Error opening hosts file for writing");
 					}
 				}
-				Titanium.API.debug("salir");
 				hostsFile.close();
+			}
+
+			function exitProgram(){
+				saveHosts();
 				Titanium.App.exit();
 			}
 
