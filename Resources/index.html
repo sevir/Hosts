@@ -1,0 +1,90 @@
+<html>
+	<head>
+		<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
+		<style>
+			#txtFile{
+				height: 100%;
+				width: 100%;
+			}
+		</style>
+		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+
+		<script>
+			var hostsFile, hostsPath;
+			var hostsContent;
+
+			function alerta(t){
+				$("#alertmsg").html(f);
+				$( "#dialog-message" ).dialog({
+					modal: true,
+					buttons: {
+						Ok: function() {
+							$( this ).dialog( "close" );
+						}
+					}
+				});
+			}
+
+			function exitProgram(){
+				txtAreaVal = $("#txtFile").val();
+				if (hostsContent !== txtAreaVal){
+					//hostsFile.close();
+
+					Titanium.API.debug("antes de abrir");
+					hostsFile = Titanium.Filesystem.getFileStream(hostsFile);
+
+					if (hostsFile.open(Titanium.Filesystem.MODE_WRITE)){
+						if (! hostsFile.write(txtAreaVal) ){
+							alert("Error saving hosts file");
+						}else{
+							Titanium.API.debug("se ha escrito");
+						}
+					}else{
+						Titanium.API.debug("no abre");
+						alert("Error opening hosts file for writing");
+					}
+				}
+				Titanium.API.debug("salir");
+				hostsFile.close();
+				Titanium.App.exit();
+			}
+
+			$(function(){
+				hostsPath = "/etc/"
+				if (Titanium.Platform.getName().indexOf("Windows") >= 0){
+					hostsPath = "C:\\Windows\\System32\\drivers\\etc\\";
+				}
+
+				hostsFile = Titanium.Filesystem.getFile(hostsPath+"hosts");
+
+				if(! hostsFile.isWritable()){
+					if (! hostsFile.setWritable()){
+						alert("Please set hosts file as writable");
+					}
+				}
+				hostsContent = hostsFile.read();
+
+				$("#txtFile").val(
+					hostsContent
+				);
+
+				$(document).keyup(function(e){
+					code = (e.keyCode ? e.keyCode : e.which);
+					if (code == 27){
+						exitProgram();
+					}
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<textarea id="txtFile"></textarea>
+		<div id="dialog-message" title="Hosts File Editor">
+		<p>
+			<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
+			<span id="alertmsg"></span>
+		</p>
+</div>
+	</body>
+</html>
