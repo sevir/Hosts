@@ -1,0 +1,1 @@
+do shell script "chmod 755 /etc/hosts" with administrator privileges

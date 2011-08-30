@@ -29,7 +29,7 @@
 			function saveHosts(){
 				txtAreaVal = $("#txtFile").val();
 				if (hostsContent !== txtAreaVal){
-					//hostsFile.close();
+					checkPerms(hostsFile);
 
 					hostsFile = Titanium.Filesystem.getFileStream(hostsFile);
 
@@ -42,7 +42,32 @@
 					}
 				}
 				hostsFile.close();
+				resetPerms();
 			}
+
+			function checkPerms(file){
+				if (Titanium.Platform.getName().indexOf("Darwin") >= 0){
+					if(! file.isWritable()){
+						var process = Titanium.Process.createProcess(["/usr/bin/osascript", Titanium.API.Application.getResourcesPath()+"/setpermissions.osx"]);
+
+				        process();
+					}
+				}else{
+					if(! file.isWritable()){
+						alert("Please set hosts file as writable");
+					}
+				}
+			}
+
+			function resetPerms(){
+				if (Titanium.Platform.getName().indexOf("Darwin") >= 0){
+					var process = Titanium.Process.createProcess(["/usr/bin/osascript", Titanium.API.Application.getResourcesPath()+"/unsetpermissions.osx"]);
+
+				    process();
+				}
+			}
+
+
 
 			function exitProgram(){
 				saveHosts();
@@ -51,18 +76,17 @@
 
 			$(function(){
 				hostsPath = "/etc/"
+
 				if (Titanium.Platform.getName().indexOf("Windows") >= 0){
 					hostsPath = "C:\\Windows\\System32\\drivers\\etc\\";
 				}
 
 				hostsFile = Titanium.Filesystem.getFile(hostsPath+"hosts");
 
-				if(! hostsFile.isWritable()){
-					if (! hostsFile.setWritable()){
-						alert("Please set hosts file as writable");
-					}
-				}
+				checkPerms(hostsFile);
+
 				hostsContent = hostsFile.read();
+
 
 				$("#txtFile").val(
 					hostsContent
@@ -79,11 +103,13 @@
 	</head>
 	<body>
 		<textarea id="txtFile"></textarea>
+		<!--
 		<div id="dialog-message" title="Hosts File Editor">
 		<p>
 			<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
 			<span id="alertmsg"></span>
 		</p>
+		-->
 </div>
 	</body>
 </html>
