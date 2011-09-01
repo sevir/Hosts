@@ -1,28 +1,54 @@
 <html>
 	<head>
-		<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
+		<link href="styles/kendo.common.min.css" rel="stylesheet"/>
+        <link href="styles/kendo.kendo.min.css" rel="stylesheet"/>
+        <title>Hosts editor</title>
 		<style>
+			body{
+				margin: 0;
+			}
 			#txtFile{
 				height: 100%;
 				width: 100%;
 			}
+			#dialog-message{
+				text-align: center;
+			}
+			.t-window-titlebar{
+				font-size: 11px;
+			}
 		</style>
 		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
-		<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+		<script type="text/javascript" src="js/kendo.all.min.js"></script>
 
 		<script>
 			var hostsFile, hostsPath;
 			var hostsContent;
 
-			function alerta(t){
-				$("#alertmsg").html(t);
-				$( "#dialog-message" ).dialog({
-					modal: true,
-					buttons: {
-						Ok: function() {
-							$( this ).dialog( "close" );
-						}
-					}
+			function k_alert(m,t){
+				if (typeof t == "undefined"){
+					t = "Hosts file editor";
+				}
+
+				var w = $( "#dialog-message" ).data("kendoWindow");
+				if(!w){
+					var w = $( "#dialog-message" ).kendoWindow({
+						 title: t,
+					     visible: false,
+					     modal: true
+					}).data("kendoWindow");
+				}
+
+
+				$("#dialog-message .content").html(" "+m+" ");
+
+				w.title(t);
+				w.center();
+				w.open();
+
+				$("#dialog-message .closeBt").click(function(){
+					w = $( "#dialog-message" ).data("kendoWindow");
+					w.close();
 				});
 			}
 
@@ -98,18 +124,22 @@
 						exitProgram();
 					}
 				});
+
+				var w = $( "#dialog-message" ).kendoWindow({
+						 title: "Hosts editor",
+					     visible: false,
+					     modal: true
+					}).data("kendoWindow");
 			});
 		</script>
 	</head>
 	<body>
-		<textarea id="txtFile"></textarea>
-		<!--
 		<div id="dialog-message" title="Hosts File Editor">
-		<p>
-			<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
-			<span id="alertmsg"></span>
-		</p>
-		-->
-</div>
+			<div class="content"></div>
+			<button class="closeBt">Ok</button>
+		</div>
+		<textarea id="txtFile"></textarea>
+
+
 	</body>
 </html>
