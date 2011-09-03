@@ -1,0 +1,40 @@
+body{
+	margin: 0;
+}
+#advanced{
+	width: 100%;
+	height: 94%;
+}
+#txtFile{
+	height: 100%;
+	width: 100%;
+}
+#dialog-message{
+	text-align: center;
+}
+.t-window-titlebar{
+	font-size: 11px;
+}
+
+#header{
+	color: #CCC;
+	background: #E3E3E3 url(app://com.digio.sevir.hosts/styles/Kendo/gradient.png) repeat-x 0px 50%;
+	height: 26px;
+}
+
+#header #info{
+	float: left;
+}
+
+#menu a{
+	color: #000;
+	text-decoration: none;
+}
+#toolbox{
+	float: right;
+	height: 20px;
+	width: 20px;
+	margin-top: 2px;
+	margin-right: 5px;
+	background: url("../imgs/descarga.png") -5px -20px no-repeat;
+}

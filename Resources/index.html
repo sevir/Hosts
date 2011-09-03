@@ -4,142 +4,51 @@
         <link href="styles/kendo.kendo.min.css" rel="stylesheet"/>
         <title>Hosts editor</title>
 		<style>
-			body{
-				margin: 0;
-			}
-			#txtFile{
-				height: 100%;
-				width: 100%;
-			}
-			#dialog-message{
-				text-align: center;
-			}
-			.t-window-titlebar{
-				font-size: 11px;
-			}
+			@import "styles/app.css";
 		</style>
 		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 		<script type="text/javascript" src="js/kendo.all.min.js"></script>
+		<script type="text/javascript" src="js/jquery.textarea.js"></script>
 
-		<script>
-			var hostsFile, hostsPath;
-			var hostsContent;
-
-			function k_alert(m,t){
-				if (typeof t == "undefined"){
-					t = "Hosts file editor";
-				}
-
-				var w = $( "#dialog-message" ).data("kendoWindow");
-				if(!w){
-					var w = $( "#dialog-message" ).kendoWindow({
-						 title: t,
-					     visible: false,
-					     modal: true
-					}).data("kendoWindow");
-				}
-
-
-				$("#dialog-message .content").html(" "+m+" ");
-
-				w.title(t);
-				w.center();
-				w.open();
-
-				$("#dialog-message .closeBt").click(function(){
-					w = $( "#dialog-message" ).data("kendoWindow");
-					w.close();
-				});
-			}
-
-			function saveHosts(){
-				txtAreaVal = $("#txtFile").val();
-				if (hostsContent !== txtAreaVal){
-					checkPerms(hostsFile);
-
-					hostsFile = Titanium.Filesystem.getFileStream(hostsFile);
-
-					if (hostsFile.open(Titanium.Filesystem.MODE_WRITE)){
-						if (! hostsFile.write(txtAreaVal) ){
-							alert("Error saving hosts file");
-						}
-					}else{
-						alert("Error opening hosts file for writing");
-					}
-				}
-				hostsFile.close();
-				resetPerms();
-			}
-
-			function checkPerms(file){
-				if (Titanium.Platform.getName().indexOf("Darwin") >= 0){
-					if(! file.isWritable()){
-						var process = Titanium.Process.createProcess(["/usr/bin/osascript", Titanium.API.Application.getResourcesPath()+"/setpermissions.osx"]);
-
-				        process();
-					}
-				}else{
-					if(! file.isWritable()){
-						alert("Please set hosts file as writable");
-					}
-				}
-			}
-
-			function resetPerms(){
-				if (Titanium.Platform.getName().indexOf("Darwin") >= 0){
-					var process = Titanium.Process.createProcess(["/usr/bin/osascript", Titanium.API.Application.getResourcesPath()+"/unsetpermissions.osx"]);
-
-				    process();
-				}
-			}
-
-
-
-			function exitProgram(){
-				saveHosts();
-				Titanium.App.exit();
-			}
-
-			$(function(){
-				hostsPath = "/etc/"
-
-				if (Titanium.Platform.getName().indexOf("Windows") >= 0){
-					hostsPath = "C:\\Windows\\System32\\drivers\\etc\\";
-				}
-
-				hostsFile = Titanium.Filesystem.getFile(hostsPath+"hosts");
-
-				checkPerms(hostsFile);
-
-				hostsContent = hostsFile.read();
-
-
-				$("#txtFile").val(
-					hostsContent
-				);
-
-				$(document).keyup(function(e){
-					code = (e.keyCode ? e.keyCode : e.which);
-					if (code == 27){
-						exitProgram();
-					}
-				});
-
-				var w = $( "#dialog-message" ).kendoWindow({
-						 title: "Hosts editor",
-					     visible: false,
-					     modal: true
-					}).data("kendoWindow");
-			});
-		</script>
+		<script type="text/javascript" src="js/app.js"></script>
 	</head>
 	<body>
+<!-- header -->
+<div id="header">
+	<div id="info">
+		<ul id="menu">
+			<li>File
+				<ul>
+					<li onclick="hosts.saveHosts();">Save</li>
+					<li onclick="hosts.exit();">Save &amp; Exit</li>
+					<li onclick="Titanium.App.exit();">Exit</li>
+				</ul>
+			</li>
+			<li>View
+				<ul>
+					<li>Wizard mode</li>
+				</ul>
+			</li>
+			<li>Options</li>
+			<li>About
+				<ul>
+					<li>
+						<p>SeViR &copy;2011</p>
+						<p><a href="http://www.digio.es" target="_blank">Digio Soluciones Digitales</a></p>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<div id="toolbox"></div>
+</div>
+<div id="advanced">
+	<textarea id="txtFile"></textarea>
+</div>
+<!-- DIALOGS -->
 		<div id="dialog-message" title="Hosts File Editor">
 			<div class="content"></div>
 			<button class="closeBt">Ok</button>
 		</div>
-		<textarea id="txtFile"></textarea>
-
-
 	</body>
 </html>
