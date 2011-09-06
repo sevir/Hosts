@@ -7,9 +7,20 @@ var hosts = function(){
 	 var internal = {
 		hostsFile: "",
 		hostsPath: "",
-		hostsContent: ""
+		hostsContent: "",
+		isComment: function(t){
+			return /^\s*#.*/.test(t);
+		},
+		isRule: function(t){
+			return /(((([0-9,a-f]){0,4}:){2}(([0-9,a-f,%,\d,\w]){0,10}))|([0-9]{1,3}\.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}))\s*(([\w\d:#@%/;$()~_?\+-=\\\.&]+\.?)+([\w\d:#@%/;$()~_?\+-=\\\.&]+))/.test(t);
 
-
+		},
+		isGroupStart: function(t){
+			return /^\s*#\s+GROUP\s+([\w,\d]+)/.test(t);
+		},
+		isGroupEnd: function(t){
+			return /^\s*#\s+END\s+GROUP\s+([\w,\d]+)/.test(t);
+		}
 	 }
 
 	 var external = {
@@ -93,6 +104,16 @@ var hosts = function(){
 			internal.hostsContent = internal.hostsFile.read();
 
 			return internal.hostsContent;
+		},
+		reloadHosts: function(){
+			$("#txtFile").val(
+				this.readHosts()
+			);
+		},
+		parse: function(){
+			var f = this.readHosts();
+			var lines = f.split("\n");
+
 		}
 	 }
 

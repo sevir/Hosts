@@ -19,6 +19,7 @@
 		<ul id="menu">
 			<li>File
 				<ul>
+					<li onclick="hosts.reloadHosts();">Reload</li>
 					<li onclick="hosts.saveHosts();">Save</li>
 					<li onclick="hosts.exit();">Save &amp; Exit</li>
 					<li onclick="Titanium.App.exit();">Exit</li>
@@ -26,7 +27,7 @@
 			</li>
 			<li>View
 				<ul>
-					<li>Wizard mode</li>
+					<li onclick="hosts.parse()">Wizard mode</li>
 				</ul>
 			</li>
 			<li>Options</li>
